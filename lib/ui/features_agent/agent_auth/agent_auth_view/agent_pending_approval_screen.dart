@@ -114,7 +114,7 @@ class AgentPendingApprovalScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.kPrimaryColor.withValues(alpha: 0.15),
+        color: AppColors.kPrimaryColor.withOpacity(0.15),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(

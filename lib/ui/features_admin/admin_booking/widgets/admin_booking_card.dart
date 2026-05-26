@@ -71,7 +71,7 @@ Widget adminBookingCard(BuildContext context, BookingModel? booking) {
                       overflow: TextOverflow.ellipsis,
                       style: AppStyles.regularStringStyle(
                         14,
-                        AppColors.fullBlack.withValues(alpha: 0.7),
+                        AppColors.fullBlack.withOpacity(0.7),
                       ),
                     ),
                   ),

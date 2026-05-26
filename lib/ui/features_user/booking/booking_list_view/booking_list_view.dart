@@ -8,6 +8,7 @@ import 'package:biztidy_mobile_app/ui/shared/loading_widget.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_colors.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_strings.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_styles.dart';
+import 'package:biztidy_mobile_app/utils/app_constants/app_theme_data.dart';
 import 'package:cupertino_will_pop_scope/cupertino_will_pop_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -42,13 +43,15 @@ class _BookingsListScreenState extends State<BookingsListScreen> {
         value: SystemUiOverlayStyle(
           statusBarColor: AppColors.primaryThemeColor,
           statusBarIconBrightness: Brightness.light,
-          systemNavigationBarIconBrightness: Brightness.dark,
-          systemNavigationBarColor: AppColors.plainWhite,
+          systemNavigationBarIconBrightness:
+              context.isDark ? Brightness.light : Brightness.dark,
+          systemNavigationBarColor: context.navBarBg,
         ),
         child: GetBuilder<BookingsListController>(
           init: BookingsListController(),
           builder: (_) {
             return Scaffold(
+              backgroundColor: context.bgColor,
               bottomNavigationBar: const CustomNavBar(currentPageIndx: 2),
               appBar: AppBar(
                 elevation: 3,
@@ -57,7 +60,7 @@ class _BookingsListScreenState extends State<BookingsListScreen> {
                 backgroundColor: AppColors.primaryThemeColor,
                 title: Text(
                   AppStrings.myBookings,
-                  style: AppStyles.normalStringStyle(20, AppColors.fullBlack),
+                  style: AppStyles.normalStringStyle(20, AppColors.plainWhite),
                 ),
               ),
               body: controller.showLoading == true
@@ -75,9 +78,9 @@ class _BookingsListScreenState extends State<BookingsListScreen> {
   Widget _bookingListView(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(12.0),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(
+      decoration: BoxDecoration(
+        color: context.bgColor,
+        borderRadius: const BorderRadius.vertical(
           top: Radius.circular(20.0),
         ),
       ),

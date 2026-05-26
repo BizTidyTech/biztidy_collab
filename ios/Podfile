@@ -40,5 +40,16 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+    target.build_configurations.each do |config|
+      config.build_settings['SWIFT_VERSION'] = '5.9'
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
+    end
+  end
+  # Patch FirebaseSharedSwift to remove Swift 5.10+ syntax incompatible with Xcode 15.2
+  firebase_encoder = "#{installer.sandbox.root}/FirebaseSharedSwift/FirebaseSharedSwift/Sources/third_party/FirebaseDataEncoder/FirebaseDataEncoder.swift"
+  if File.exist?(firebase_encoder)
+    system("sed -i '' 's/throws -> sending Any/throws -> Any/g' '#{firebase_encoder}'")
+    system("sed -i '' 's/nonisolated(unsafe) fileprivate/fileprivate/g' '#{firebase_encoder}'")
+    system("sed -i '' 's/nonisolated(unsafe) //g' '#{firebase_encoder}'")
   end
 end

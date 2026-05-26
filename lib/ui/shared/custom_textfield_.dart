@@ -2,6 +2,7 @@
 
 import 'package:biztidy_mobile_app/utils/app_constants/app_colors.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_styles.dart';
+import 'package:biztidy_mobile_app/utils/app_constants/app_theme_data.dart';
 import 'package:flutter/material.dart';
 
 TextStyle labelTextStyles = TextStyle(
@@ -100,7 +101,7 @@ class _CustomTextfieldState extends State<CustomTextfield> {
       height: 55,
       child: TextFormField(
         style: widget.inputStringStyle ??
-            AppStyles.inputStringStyle(AppColors.fullBlack),
+            AppStyles.inputStringStyle(context.textPrimary),
         controller: widget.textEditingController,
         maxLength: widget.textMaxLength,
         keyboardType: widget.keyboardType,
@@ -111,19 +112,23 @@ class _CustomTextfieldState extends State<CustomTextfield> {
         decoration: InputDecoration(
           labelText: widget.labelText,
           hintText: widget.hintText,
-          fillColor: widget.fillColor ?? AppColors.plainWhite,
+          fillColor: widget.fillColor ?? context.surfaceBg,
           filled: true,
           enabled: widget.enabled ?? true,
           suffixIcon: widget.suffixIcon,
-          contentPadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+          contentPadding: const EdgeInsets.fromLTRB(18, 0, 15, 0),
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.kPrimaryColor, width: 2.0),
-            borderRadius: BorderRadius.circular(15.0),
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(14.0),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide:
-                BorderSide(color: AppColors.primaryThemeColor, width: 2.0),
-            borderRadius: BorderRadius.circular(15.0),
+                BorderSide(color: AppColors.primaryThemeColor, width: 1.5),
+            borderRadius: BorderRadius.circular(14.0),
+          ),
+          disabledBorder: OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(14.0),
           ),
           labelStyle: labelTextStyles,
           hintStyle: widget.hintStyle ?? hintTextStyles,

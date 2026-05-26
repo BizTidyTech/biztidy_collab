@@ -72,7 +72,7 @@ class AppStyles {
       _base(
         fontSize,
         _regularWeight,
-        color ?? AppColors.lightGray.withValues(alpha: 0.4),
+        color ?? AppColors.lightGray.withOpacity(0.4),
       );
 
   static TextStyle floatingHintStringStyleColored(

@@ -102,7 +102,7 @@ class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
                 opacity: _ctrl.value.isPlaying ? 0.0 : 1.0,
                 duration: const Duration(milliseconds: 300),
                 child: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.black38,
                     shape: BoxShape.circle,
                   ),
@@ -151,7 +151,7 @@ class JobMediaGrid extends StatelessWidget {
           padding:
               const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           decoration: BoxDecoration(
-            color: labelColor.withValues(alpha: 0.12),
+            color: labelColor.withOpacity(0.12),
             borderRadius: BorderRadius.circular(6),
           ),
           child: Text(

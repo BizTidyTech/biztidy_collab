@@ -182,10 +182,10 @@ class _AgentActiveJobViewState extends State<AgentActiveJobView> {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.kPrimaryColor.withValues(alpha: 0.1),
+        color: AppColors.kPrimaryColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-            color: AppColors.primaryThemeColor.withValues(alpha: 0.2)),
+            color: AppColors.primaryThemeColor.withOpacity(0.2)),
       ),
       child: child,
     );

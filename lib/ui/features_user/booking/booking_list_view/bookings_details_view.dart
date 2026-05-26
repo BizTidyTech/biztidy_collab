@@ -12,6 +12,7 @@ import 'package:biztidy_mobile_app/ui/shared/spacer.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_colors.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_strings.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_styles.dart';
+import 'package:biztidy_mobile_app/utils/app_constants/app_theme_data.dart';
 import 'package:biztidy_mobile_app/utils/extension_and_methods/screen_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -89,15 +90,15 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
           onTap: () =>
               SystemChannels.textInput.invokeMethod('TextInput.hide'),
           child: Scaffold(
-            backgroundColor: AppColors.plainWhite,
+            backgroundColor: context.bgColor,
             appBar: AppBar(
               elevation: 3,
-              shadowColor: AppColors.lightGray,
-              surfaceTintColor: AppColors.plainWhite,
-              backgroundColor: AppColors.plainWhite,
+              shadowColor: context.dividerColor,
+              surfaceTintColor: context.cardBg,
+              backgroundColor: context.cardBg,
               title: Text(
                 AppStrings.bookingDetails,
-                style: AppStyles.normalStringStyle(20, AppColors.fullBlack),
+                style: AppStyles.normalStringStyle(20, context.textPrimary),
               ),
             ),
             body: SingleChildScrollView(
@@ -171,7 +172,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                     'Full payment received. Your booking is confirmed!',
                     textAlign: TextAlign.center,
                     style: AppStyles.regularStringStyle(
-                        15, AppColors.fullBlack),
+                        15, context.textPrimary),
                   ),
 
                   const SizedBox(height: 24),
@@ -238,10 +239,10 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
+        color: color.withOpacity(0.08),
         borderRadius: BorderRadius.circular(12),
         border:
-            Border.all(color: color.withValues(alpha: 0.3)),
+            Border.all(color: color.withOpacity(0.3)),
       ),
       child: Row(
         children: [
@@ -265,13 +266,12 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.plainWhite,
+        color: context.cardBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-            color: AppColors.lightGray.withValues(alpha: 0.5)),
+        border: Border.all(color: context.dividerColor),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
+              color: Colors.black.withOpacity(0.04),
               blurRadius: 8,
               offset: const Offset(0, 2))
         ],
@@ -286,7 +286,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
               const SizedBox(width: 8),
               Text('Job Photos & Videos',
                   style: AppStyles.keyStringStyle(
-                      15, AppColors.fullBlack)),
+                      15, context.textPrimary)),
             ],
           ),
           verticalSpacer(4),
@@ -351,10 +351,10 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.normalGreen.withValues(alpha: 0.07),
+        color: AppColors.normalGreen.withOpacity(0.07),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-            color: AppColors.normalGreen.withValues(alpha: 0.3)),
+            color: AppColors.normalGreen.withOpacity(0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -382,7 +382,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
             const SizedBox(width: 8),
             Text('${rating.toStringAsFixed(1)} / 5',
                 style: AppStyles.keyStringStyle(
-                    15, AppColors.fullBlack)),
+                    15, context.textPrimary)),
           ]),
           if (review != null && review.isNotEmpty) ...[
             const SizedBox(height: 10),
@@ -404,7 +404,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
         color: const Color(0xFFFFF8EC),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-            color: const Color(0xFFF59E0B).withValues(alpha: 0.4)),
+            color: const Color(0xFFF59E0B).withOpacity(0.4)),
       ),
       child: Column(
         children: [
@@ -413,7 +413,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
           const SizedBox(height: 8),
           Text('How did your clean go?',
               style: AppStyles.regularStringStyle(
-                  15, AppColors.fullBlack)),
+                  15, context.textPrimary)),
           const SizedBox(height: 4),
           Text(
             'Your rating helps us maintain quality and unlock '

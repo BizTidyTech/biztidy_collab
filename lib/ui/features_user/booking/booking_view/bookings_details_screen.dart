@@ -11,6 +11,7 @@ import 'package:biztidy_mobile_app/ui/shared/spacer.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_colors.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_strings.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_styles.dart';
+import 'package:biztidy_mobile_app/utils/app_constants/app_theme_data.dart';
 import 'package:biztidy_mobile_app/utils/extension_and_methods/screen_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,15 +46,15 @@ class _BookingsDetailsScreenState extends State<BookingsDetailsScreen> {
         return GestureDetector(
           onTap: () => SystemChannels.textInput.invokeMethod('TextInput.hide'),
           child: Scaffold(
-            backgroundColor: AppColors.plainWhite,
+            backgroundColor: context.bgColor,
             appBar: AppBar(
               elevation: 3,
-              shadowColor: AppColors.lightGray,
-              surfaceTintColor: AppColors.plainWhite,
-              backgroundColor: AppColors.plainWhite,
+              shadowColor: context.dividerColor,
+              surfaceTintColor: context.cardBg,
+              backgroundColor: context.cardBg,
               title: Text(
                 AppStrings.bookings,
-                style: AppStyles.normalStringStyle(20, AppColors.fullBlack),
+                style: AppStyles.normalStringStyle(20, context.textPrimary),
               ),
             ),
             body: SingleChildScrollView(
@@ -67,7 +68,7 @@ class _BookingsDetailsScreenState extends State<BookingsDetailsScreen> {
                         "Location address/Landmark name",
                         style: AppStyles.subStringStyle(
                           12,
-                          AppColors.fullBlack,
+                          context.textPrimary,
                         ),
                       ),
                     ],
@@ -117,7 +118,7 @@ class _BookingsDetailsScreenState extends State<BookingsDetailsScreen> {
                                 "Address: ${controller.userLocationData?.formattedAddress}");
                           }
                         },
-                        color: AppColors.plainWhite,
+                        color: context.cardBg,
                         borderColor: AppColors.primaryThemeColor,
                         child: isLoading
                             ? loadingWidget()
@@ -149,7 +150,7 @@ class _BookingsDetailsScreenState extends State<BookingsDetailsScreen> {
                         controller.userLocationData!.formattedAddress ?? '',
                         style: AppStyles.regularStringStyle(
                           15,
-                          AppColors.fullBlack,
+                          context.textPrimary,
                         ),
                       ),
                     ),
@@ -166,7 +167,7 @@ class _BookingsDetailsScreenState extends State<BookingsDetailsScreen> {
                       Text(
                         "Duration",
                         style:
-                            AppStyles.subStringStyle(12, AppColors.fullBlack),
+                            AppStyles.subStringStyle(12, context.textPrimary),
                       ),
                       Text(
                         "${_durationValue.toInt()} hours",
@@ -202,7 +203,7 @@ class _BookingsDetailsScreenState extends State<BookingsDetailsScreen> {
                       Text(
                         "Room sq ft",
                         style:
-                            AppStyles.subStringStyle(12, AppColors.fullBlack),
+                            AppStyles.subStringStyle(12, context.textPrimary),
                       ),
                       Text(
                         "${_roomSqFtValue.toInt()} sq ft",

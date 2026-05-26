@@ -12,6 +12,7 @@ import 'package:biztidy_mobile_app/ui/shared/spacer.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_colors.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_strings.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_styles.dart';
+import 'package:biztidy_mobile_app/utils/app_constants/app_theme_data.dart';
 import 'package:cupertino_will_pop_scope/cupertino_will_pop_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,26 +45,28 @@ class _BookingsViewState extends State<BookingsView> {
       shouldAddCallback: true,
       child: AnnotatedRegion(
         value: SystemUiOverlayStyle(
-          statusBarColor: AppColors.plainWhite,
-          statusBarIconBrightness: Brightness.dark,
-          systemNavigationBarIconBrightness: Brightness.dark,
-          systemNavigationBarColor: AppColors.plainWhite,
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness:
+              context.isDark ? Brightness.light : Brightness.dark,
+          systemNavigationBarIconBrightness:
+              context.isDark ? Brightness.light : Brightness.dark,
+          systemNavigationBarColor: context.navBarBg,
         ),
         child: GetBuilder<BookingsController>(
           init: BookingsController(),
           builder: (_) {
             return Scaffold(
-              backgroundColor: AppColors.plainWhite,
+              backgroundColor: context.bgColor,
               bottomNavigationBar: const CustomNavBar(currentPageIndx: 1),
               appBar: AppBar(
                 elevation: 3,
                 automaticallyImplyLeading: false,
-                shadowColor: AppColors.lightGray,
-                surfaceTintColor: AppColors.plainWhite,
-                backgroundColor: AppColors.plainWhite,
+                shadowColor: context.dividerColor,
+                surfaceTintColor: context.cardBg,
+                backgroundColor: context.cardBg,
                 title: Text(
                   AppStrings.bookings,
-                  style: AppStyles.normalStringStyle(20, AppColors.fullBlack),
+                  style: AppStyles.normalStringStyle(20, context.textPrimary),
                 ),
               ),
               body: Padding(
@@ -72,6 +75,9 @@ class _BookingsViewState extends State<BookingsView> {
                 child: Column(
                   children: [
                     CustomCurvedContainer(
+                      fillColor: context.isDark
+                          ? Colors.black
+                          : AppColors.kPrimaryColor,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -84,9 +90,14 @@ class _BookingsViewState extends State<BookingsView> {
                               maxLines: 1,
                               style: controller.selectedService == null
                                   ? AppStyles.floatingHintStringStyle(16,
-                                      color: AppColors.deepBlue)
+                                      color: context.isDark
+                                          ? Colors.white70
+                                          : context.textSecondary)
                                   : AppStyles.normalStringStyle(
-                                      16, AppColors.fullBlack),
+                                      16,
+                                      context.isDark
+                                          ? Colors.white
+                                          : context.textPrimary),
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -109,7 +120,9 @@ class _BookingsViewState extends State<BookingsView> {
                     ),
                     verticalSpacer(10),
                     CustomCurvedContainer(
-                      fillColor: AppColors.plainWhite,
+                      fillColor: context.isDark
+                          ? Colors.white
+                          : context.cardBg,
                       borderColor: AppColors.primaryThemeColor,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -124,9 +137,14 @@ class _BookingsViewState extends State<BookingsView> {
                               maxLines: 1,
                               style: controller.selectedService == null
                                   ? AppStyles.floatingHintStringStyle(16,
-                                      color: AppColors.deepBlue)
+                                      color: context.isDark
+                                          ? Colors.black54
+                                          : context.textSecondary)
                                   : AppStyles.normalStringStyle(
-                                      16, AppColors.fullBlack),
+                                      16,
+                                      context.isDark
+                                          ? Colors.black
+                                          : context.textPrimary),
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -154,7 +172,7 @@ class _BookingsViewState extends State<BookingsView> {
                         Text(
                           "Choose start time",
                           style: AppStyles.regularStringStyle(
-                              15, AppColors.fullBlack),
+                              15, context.textPrimary),
                         ),
                       ],
                     ),
@@ -298,9 +316,9 @@ class _BookingsViewState extends State<BookingsView> {
           builder: (BuildContext context, ScrollController scrollController) {
             return Container(
               padding: const EdgeInsets.all(16.0),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(
+              decoration: BoxDecoration(
+                color: context.bgColor,
+                borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(20.0),
                 ),
               ),

@@ -88,7 +88,7 @@ class _AgentSignInViewState extends State<AgentSignInView> {
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.08),
+                                color: Colors.black.withOpacity(0.08),
                                 blurRadius: 20,
                                 offset: const Offset(0, 8),
                               ),

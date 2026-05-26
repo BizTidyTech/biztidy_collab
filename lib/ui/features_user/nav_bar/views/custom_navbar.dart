@@ -5,7 +5,8 @@ import 'package:biztidy_mobile_app/ui/features_user/nav_bar/data/page_index_clas
 import 'package:biztidy_mobile_app/utils/app_constants/app_colors.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_strings.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_styles.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:biztidy_mobile_app/utils/app_constants/app_theme_data.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
@@ -35,15 +36,21 @@ class _CustomNavBarState extends State<CustomNavBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 59,
+      height: 68,
       decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: AppColors.lighterGray)),
-        color: AppColors.plainWhite,
+        color: context.navBarBg,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.07),
+            blurRadius: 16,
+            offset: const Offset(0, -4),
+          ),
+        ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          /// Home Icon
+          /// Home
           GestureDetector(
             onTap: () {
               logger.i('Home selected');
@@ -53,7 +60,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
                   ? goPopUntil(context, "homepageView")
                   : context.go("/homepageView");
             },
-            child: _buildNavBarItem(
+            child: _buildNavItem(
               barIndex: 0,
               label: AppStrings.home,
               activeIcon: Iconsax.home_25,
@@ -61,24 +68,21 @@ class _CustomNavBarState extends State<CustomNavBar> {
             ),
           ),
 
-          /// Bookings Icon
+          /// Bookings
           GestureDetector(
             onTap: () {
               logger.i('Bookings selected');
-              final bool currentPageIndexCheck =
+              final bool fromHome =
                   Provider.of<CurrentPage>(context, listen: false)
-                              .currentPageIndex ==
-                          0
-                      ? true
-                      : false;
+                          .currentPageIndex ==
+                      0;
               Provider.of<CurrentPage>(context, listen: false)
                   .setCurrentPageIndex(1);
-              logger.i('currentPageIndexCheck: $currentPageIndexCheck');
-              currentPageIndexCheck == true
+              fromHome
                   ? context.push('/bookingsPage')
                   : context.replace('/bookingsPage');
             },
-            child: _buildNavBarItem(
+            child: _buildNavItem(
               barIndex: 1,
               label: AppStrings.bookings,
               activeIcon: Iconsax.calendar5,
@@ -86,51 +90,43 @@ class _CustomNavBarState extends State<CustomNavBar> {
             ),
           ),
 
-          /// Appointments Icon
+          /// Appointments
           GestureDetector(
             onTap: () {
               logger.i('Appointments selected');
-              final bool currentPageIndexCheck =
+              final bool fromHome =
                   Provider.of<CurrentPage>(context, listen: false)
-                              .currentPageIndex ==
-                          0
-                      ? true
-                      : false;
+                          .currentPageIndex ==
+                      0;
               Provider.of<CurrentPage>(context, listen: false)
                   .setCurrentPageIndex(2);
-              logger.i('currentPageIndexCheck: $currentPageIndexCheck');
-              currentPageIndexCheck == true
+              fromHome
                   ? context.push('/bookingsListScreen')
                   : context.replace('/bookingsListScreen');
             },
-            child: _buildNavBarItem(
+            child: _buildNavItem(
               barIndex: 2,
               label: AppStrings.appointments,
               activeIcon: IconsaxPlusBold.archive_book,
               inactiveIcon: IconsaxPlusLinear.archive_book,
-              // activeIcon: Iconsax.notification5,
-              // inactiveIcon: Iconsax.notification4,
             ),
           ),
 
-          /// Profile Icon
+          /// Profile
           GestureDetector(
             onTap: () {
               logger.i('Profile selected');
-              final bool currentPageIndexCheck =
+              final bool fromHome =
                   Provider.of<CurrentPage>(context, listen: false)
-                              .currentPageIndex ==
-                          0
-                      ? true
-                      : false;
+                          .currentPageIndex ==
+                      0;
               Provider.of<CurrentPage>(context, listen: false)
                   .setCurrentPageIndex(3);
-              logger.i('currentPageIndexCheck: $currentPageIndexCheck');
-              currentPageIndexCheck == true
+              fromHome
                   ? context.push('/profileView')
                   : context.replace('/profileView');
             },
-            child: _buildNavBarItem(
+            child: _buildNavItem(
               barIndex: 3,
               label: AppStrings.profile,
               activeIcon: IconsaxPlusBold.profile,
@@ -142,24 +138,38 @@ class _CustomNavBarState extends State<CustomNavBar> {
     );
   }
 
-  _buildNavBarItem(
-      {required int barIndex,
-      required String label,
-      required IconData activeIcon,
-      required IconData inactiveIcon}) {
+  Widget _buildNavItem({
+    required int barIndex,
+    required String label,
+    required IconData activeIcon,
+    required IconData inactiveIcon,
+  }) {
+    final bool isActive = widget.currentPageIndx == barIndex;
     return SizedBox(
-      width: 70,
+      width: 72,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            widget.currentPageIndx == barIndex ? activeIcon : inactiveIcon,
-            color: widget.currentPageIndx == barIndex
-                ? AppColors.deepBlue
-                : AppColors.fullBlack.withValues(alpha: 0.8),
-            size: 22,
+          // Active dot indicator
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 250),
+            width: isActive ? 4 : 0,
+            height: isActive ? 4 : 0,
+            margin: EdgeInsets.only(bottom: isActive ? 4 : 0),
+            decoration: BoxDecoration(
+              color: AppColors.primaryThemeColor,
+              shape: BoxShape.circle,
+            ),
           ),
+          Icon(
+            isActive ? activeIcon : inactiveIcon,
+            color: isActive
+                ? AppColors.primaryThemeColor
+                : AppColors.darkGray,
+            size: 24,
+          ),
+          const SizedBox(height: 3),
           FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
@@ -167,13 +177,10 @@ class _CustomNavBarState extends State<CustomNavBar> {
               maxLines: 1,
               style: AppStyles.subStringStyle(
                 10,
-                widget.currentPageIndx == barIndex
-                    ? AppColors.deepBlue
-                    : AppColors.fullBlack.withValues(alpha: 0.8),
+                isActive ? AppColors.primaryThemeColor : AppColors.darkGray,
               ).copyWith(
-                fontWeight: widget.currentPageIndx == barIndex
-                    ? FontWeight.w900
-                    : FontWeight.w400,
+                fontWeight:
+                    isActive ? FontWeight.w700 : FontWeight.w400,
               ),
             ),
           ),

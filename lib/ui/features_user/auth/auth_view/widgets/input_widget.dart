@@ -2,6 +2,7 @@ import 'package:biztidy_mobile_app/ui/features_user/auth/auth_controller/auth_co
 import 'package:biztidy_mobile_app/ui/shared/custom_textfield_.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_colors.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_styles.dart';
+import 'package:biztidy_mobile_app/utils/app_constants/app_theme_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,7 +19,8 @@ Widget inputWidget({
 }) {
   final controller = Get.put(AuthController());
 
-  return Container(
+  return Builder(builder: (context) {
+    return Container(
     margin: const EdgeInsets.symmetric(vertical: 6),
     height: 79,
     child: Column(
@@ -27,10 +29,7 @@ Widget inputWidget({
       children: [
         Text(
           titleText,
-          style: AppStyles.subStringStyle(
-            12,
-            AppColors.fullBlack,
-          ),
+          style: AppStyles.subStringStyle(12, context.textPrimary),
         ),
         CustomTextfield(
           textEditingController: textEditingController,
@@ -57,5 +56,6 @@ Widget inputWidget({
         ),
       ],
     ),
-  );
+    );
+  });
 }

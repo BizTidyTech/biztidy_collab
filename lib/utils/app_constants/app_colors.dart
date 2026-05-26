@@ -17,11 +17,11 @@ class AppColors {
 
   static Color deepBlue = fromHex('#001F3F');
 
-  static Color lightGray = fromHex('#161a1818').withValues(alpha: 0.05);
+  static Color lightGray = fromHex('#161a1818').withOpacity(0.05);
 
   static Color coolRed = const Color.fromARGB(255, 252, 30, 14);
 
-  static Color lighterGray = fromHex('#0c000000').withValues(alpha: 0.02);
+  static Color lighterGray = fromHex('#0c000000').withOpacity(0.02);
 
   static Color regularGray = fromHex('#28252021');
 
@@ -34,6 +34,9 @@ class AppColors {
   static Color normalGreen = const Color.fromARGB(255, 38, 223, 50);
 
   static Color transparent = Colors.transparent;
+
+  // Light teal fill for subtle backgrounds (chips, icon containers)
+  static Color lightTeal = fromHex('#00EFEF').withOpacity(0.12);
 
   static Color fromHex(String hexString) {
     final buffer = StringBuffer();

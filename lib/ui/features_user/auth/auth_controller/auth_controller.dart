@@ -235,12 +235,8 @@ class AuthController extends GetxController {
       Globals.isLoggedIn = isLoggedIn;
       context.go('/homepageView');
     } else if (isLoggedIn == false && navigateToHome != false) {
-      // ✅ FIX: Clear stale/invalid saved credentials and redirect to onboarding
-      // This prevents the app from getting stuck on the splash screen when
-      // locally saved credentials are invalid or have been changed/revoked.
-      logger.w('Sign in failed — clearing saved credentials and redirecting to onboarding.');
-      await clearSavedUserDetails();
-      context.go('/onboardingScreen');
+      errMessage = 'Invalid email or password. Please try again.';
+      logger.w('Sign in failed — invalid credentials.');
     }
     stopLoading();
   }

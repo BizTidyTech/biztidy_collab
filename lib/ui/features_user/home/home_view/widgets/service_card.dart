@@ -7,7 +7,6 @@ import 'package:biztidy_mobile_app/ui/shared/spacer.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_colors.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_strings.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_styles.dart';
-import 'package:biztidy_mobile_app/utils/extension_and_methods/screen_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -27,40 +26,52 @@ Widget serviceCard(ServiceModel service, {bool? popPage}) {
             : (service.baseCost != null
                 ? '₦${NumberFormat("#,###").format(service.baseCost)}'
                 : '');
+
         return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      height: 222,
-      child: Stack(
-        alignment: AlignmentDirectional.bottomCenter,
-        children: [
-          Container(
-            height: 222,
-            width: screenWidth(context),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              image: DecorationImage(
-                image: AssetImage(service.imageUrl ?? ''),
-                fit: BoxFit.cover,
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          height: 220,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
               ),
-            ),
+            ],
           ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            height: 65,
-            width: screenWidth(context),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              color: AppColors.plainWhite.withValues(alpha: 0.6),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(18),
+            child: Stack(
+              fit: StackFit.expand,
               children: [
-                SizedBox(
-                  width: screenWidth(context) - 50,
+                // Background image
+                Image.asset(
+                  service.imageUrl ?? '',
+                  fit: BoxFit.cover,
+                ),
+                // Gradient overlay
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withOpacity(0.65),
+                      ],
+                      stops: const [0.45, 1.0],
+                    ),
+                  ),
+                ),
+                // Bottom info row
+                Positioned(
+                  left: 14,
+                  right: 14,
+                  bottom: 14,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Expanded(
                         child: Column(
@@ -72,24 +83,28 @@ Widget serviceCard(ServiceModel service, {bool? popPage}) {
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: AppStyles.regularStringStyle(
-                                  15, AppColors.fullBlack),
+                                  15, AppColors.plainWhite),
                             ),
-                            if (priceDisplay.isNotEmpty)
+                            if (priceDisplay.isNotEmpty) ...[
+                              verticalSpacer(2),
                               Text(
                                 priceDisplay,
                                 style: AppStyles.normalStringStyle(
-                                    13, AppColors.deepBlue),
+                                    13, AppColors.kPrimaryColor),
                               ),
+                            ],
                           ],
                         ),
                       ),
                       horizontalSpacer(10),
                       SizedBox(
-                        height: 30,
+                        height: 34,
                         child: CustomButton(
                           buttonText: AppStrings.book,
-                          fontSize: 12,
-                          width: 35,
+                          fontSize: 13,
+                          width: 80,
+                          height: 34,
+                          borderRadius: 20,
                           onPressed: () {
                             Get.put(BookingsController())
                                 .changeSelectedService(service);
@@ -107,9 +122,7 @@ Widget serviceCard(ServiceModel service, {bool? popPage}) {
               ],
             ),
           ),
-        ],
-      ),
-    );
+        );
       },
     );
   });

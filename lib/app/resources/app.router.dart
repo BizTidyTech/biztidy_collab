@@ -16,6 +16,7 @@ import 'package:biztidy_mobile_app/ui/features_user/auth/auth_view/verify_otp_sc
 import 'package:biztidy_mobile_app/ui/features_user/booking/booking_list_view/booking_list_view.dart';
 import 'package:biztidy_mobile_app/ui/features_user/booking/booking_view/booking_view.dart';
 import 'package:biztidy_mobile_app/ui/features_user/home/home_view/home_view.dart';
+import 'package:biztidy_mobile_app/ui/features_user/notifications/notifications_screen.dart';
 import 'package:biztidy_mobile_app/ui/features_user/profile/profile_views/profile_views.dart';
 import 'package:biztidy_mobile_app/ui/features_user/splash_screen/splash_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -74,6 +75,10 @@ class AppRouter {
         path: '/profileView',
         pageBuilder: (context, state) => CustomNormalTransition(
             child: const ProfileView(), key: state.pageKey),
+      ),
+      GoRoute(
+        path: '/notificationsScreen',
+        builder: (context, state) => const NotificationsScreen(),
       ),
     ],
   );
