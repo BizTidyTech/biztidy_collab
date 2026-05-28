@@ -5,11 +5,14 @@ import 'package:biztidy_mobile_app/ui/features_user/home/home_model/services_mod
 import 'package:biztidy_mobile_app/ui/features_user/home/home_view/categories_services_view.dart';
 import 'package:biztidy_mobile_app/ui/features_user/nav_bar/data/page_index_class.dart';
 import 'package:biztidy_mobile_app/ui/features_user/nav_bar/views/custom_navbar.dart';
+import 'package:biztidy_mobile_app/ui/features_user/profile/profile_controller/profile_controller.dart';
+import 'package:biztidy_mobile_app/ui/features_user/profile/profile_views/edit_profile_view.dart';
 import 'package:biztidy_mobile_app/ui/shared/spacer.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_colors.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_strings.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_styles.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_theme_data.dart';
+import 'package:biztidy_mobile_app/utils/app_constants/theme_notifier.dart';
 import 'package:biztidy_mobile_app/utils/extension_and_methods/string_cap_extensions.dart';
 import 'package:cupertino_will_pop_scope/cupertino_will_pop_scope.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +20,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:quds_popup_menu/quds_popup_menu.dart';
@@ -30,6 +34,7 @@ class HomepageView extends StatefulWidget {
 
 class _HomepageViewState extends State<HomepageView> {
   final controller = Get.put(HomeController());
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void _optInNotification() async {
     await OneSignal.User.pushSubscription.optIn();
@@ -90,7 +95,9 @@ class _HomepageViewState extends State<HomepageView> {
           systemNavigationBarColor: context.navBarBg,
         ),
         child: Scaffold(
+          key: _scaffoldKey,
           backgroundColor: context.bgColor,
+          drawer: _buildDrawer(),
           bottomNavigationBar: const CustomNavBar(currentPageIndx: 0),
           body: SafeArea(
             child: CustomScrollView(
@@ -109,6 +116,176 @@ class _HomepageViewState extends State<HomepageView> {
     );
   }
 
+  // ── Sidebar Drawer ────────────────────────────────────────────────────────
+  Widget _buildDrawer() {
+    return Drawer(
+      backgroundColor: context.bgColor,
+      child: SafeArea(
+        child: Column(
+          children: [
+            // Drawer header — user info
+            GetBuilder<HomeController>(
+              init: HomeController(),
+              builder: (_) {
+                final user = controller.userData;
+                return Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xFF00B4B4), Color(0xFF007A7A)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white.withOpacity(0.2),
+                        ),
+                        clipBehavior: Clip.hardEdge,
+                        child: user?.photoUrl != null
+                            ? Image.network(user!.photoUrl!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => const Icon(
+                                    Icons.person_rounded,
+                                    color: Colors.white,
+                                    size: 30))
+                            : const Icon(Icons.person_rounded,
+                                color: Colors.white, size: 30),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        user?.name ?? 'Guest',
+                        style:
+                            AppStyles.keyStringStyle(16, Colors.white),
+                      ),
+                      if (user?.email != null)
+                        Text(
+                          user!.email!,
+                          style: AppStyles.subStringStyle(
+                              12, Colors.white.withOpacity(0.8)),
+                        ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 8),
+
+            // Dark mode toggle
+            Consumer<ThemeNotifier>(
+              builder: (_, theme, __) => Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: context.surfaceBg,
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: SwitchListTile(
+                    value: theme.isDark,
+                    onChanged: (_) => theme.toggle(),
+                    activeColor: AppColors.primaryThemeColor,
+                    title: Text('Dark Mode',
+                        style: AppStyles.normalStringStyle(
+                            14, context.textPrimary)),
+                    secondary: Icon(
+                      theme.isDark
+                          ? IconsaxPlusLinear.moon
+                          : IconsaxPlusLinear.sun_1,
+                      color: AppColors.primaryThemeColor,
+                      size: 22,
+                    ),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 16),
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 8),
+            Divider(height: 1, color: context.dividerColor, indent: 16, endIndent: 16),
+            const SizedBox(height: 8),
+
+            // Navigation items
+            _drawerTile(
+              icon: IconsaxPlusLinear.user_edit,
+              label: 'Edit Profile',
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const EditProfileView()));
+              },
+            ),
+            _drawerTile(
+              icon: IconsaxPlusLinear.calendar_1,
+              label: 'My Bookings',
+              onTap: () {
+                Navigator.pop(context);
+                Provider.of<CurrentPage>(context, listen: false)
+                    .setCurrentPageIndex(1);
+                context.push('/bookingsPage');
+              },
+            ),
+            _drawerTile(
+              icon: IconsaxPlusLinear.notification,
+              label: 'Notifications',
+              onTap: () {
+                Navigator.pop(context);
+                context.push('/notificationsScreen');
+              },
+            ),
+            _drawerTile(
+              icon: IconsaxPlusLinear.profile_circle,
+              label: 'My Profile',
+              onTap: () {
+                Navigator.pop(context);
+                Provider.of<CurrentPage>(context, listen: false)
+                    .setCurrentPageIndex(3);
+                context.push('/profileView');
+              },
+            ),
+
+            const Spacer(),
+            Divider(height: 1, color: context.dividerColor, indent: 16, endIndent: 16),
+            _drawerTile(
+              icon: IconsaxPlusLinear.logout_1,
+              label: 'Logout',
+              color: AppColors.coolRed,
+              onTap: () {
+                Navigator.pop(context);
+                Get.put(ProfileController()).logout(context);
+              },
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _drawerTile({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+    Color? color,
+  }) {
+    final c = color ?? context.textPrimary;
+    return ListTile(
+      leading: Icon(icon, color: c, size: 22),
+      title: Text(label,
+          style: AppStyles.normalStringStyle(14, c)),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+      onTap: onTap,
+    );
+  }
+
   // ── Header ────────────────────────────────────────────────────────────────
   Widget _buildHeader() {
     return GetBuilder<HomeController>(
@@ -124,26 +301,29 @@ class _HomepageViewState extends State<HomepageView> {
           padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
           child: Row(
             children: [
-              // Avatar
-              Container(
-                width: 46,
-                height: 46,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.primaryThemeColor.withOpacity(0.15),
+              // Avatar — tapping opens the sidebar drawer
+              GestureDetector(
+                onTap: () => _scaffoldKey.currentState?.openDrawer(),
+                child: Container(
+                  width: 46,
+                  height: 46,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.primaryThemeColor.withOpacity(0.15),
+                  ),
+                  clipBehavior: Clip.hardEdge,
+                  child: controller.userData?.photoUrl != null
+                      ? Image.network(
+                          controller.userData!.photoUrl!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Icon(
+                              Icons.person_rounded,
+                              color: AppColors.primaryThemeColor,
+                              size: 26),
+                        )
+                      : Icon(Icons.person_rounded,
+                          color: AppColors.primaryThemeColor, size: 26),
                 ),
-                clipBehavior: Clip.hardEdge,
-                child: controller.userData?.photoUrl != null
-                    ? Image.network(
-                        controller.userData!.photoUrl!,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Icon(
-                            Icons.person_rounded,
-                            color: AppColors.primaryThemeColor,
-                            size: 26),
-                      )
-                    : Icon(Icons.person_rounded,
-                        color: AppColors.primaryThemeColor, size: 26),
               ),
               horizontalSpacer(12),
               // Greeting
@@ -189,27 +369,156 @@ class _HomepageViewState extends State<HomepageView> {
 
   // ── Search bar ────────────────────────────────────────────────────────────
   Widget _buildSearchBar() {
-    return Container(
-      color: context.cardBg,
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+    return GestureDetector(
+      onTap: () => _showSearchSheet(),
       child: Container(
-        height: 48,
-        decoration: BoxDecoration(
-          color: context.surfaceBg,
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Row(
-          children: [
-            const SizedBox(width: 14),
-            Icon(Icons.search_rounded, color: context.textSecondary, size: 22),
-            const SizedBox(width: 8),
-            Text(
-              'Search services...',
-              style: AppStyles.subStringStyle(14, context.textSecondary),
-            ),
-          ],
+        color: context.cardBg,
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+        child: Container(
+          height: 48,
+          decoration: BoxDecoration(
+            color: context.surfaceBg,
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Row(
+            children: [
+              const SizedBox(width: 14),
+              Icon(Icons.search_rounded, color: context.textSecondary, size: 22),
+              const SizedBox(width: 8),
+              Text(
+                'Search services...',
+                style: AppStyles.subStringStyle(14, context.textSecondary),
+              ),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  void _showSearchSheet() {
+    final allServices = [
+      ...commercialServices,
+      ...residentialServices,
+      ...industrialServices,
+      ...specialtyServices,
+    ];
+    String query = '';
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: context.bgColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (ctx, setModal) {
+            final filtered = query.isEmpty
+                ? allServices
+                : allServices
+                    .where((s) =>
+                        (s.name ?? '').toLowerCase().contains(query.toLowerCase()))
+                    .toList();
+            return DraggableScrollableSheet(
+              initialChildSize: 0.85,
+              minChildSize: 0.5,
+              maxChildSize: 0.95,
+              expand: false,
+              builder: (_, scrollCtrl) => Column(
+                children: [
+                  const SizedBox(height: 12),
+                  Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: context.textSecondary.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextField(
+                      autofocus: true,
+                      onChanged: (v) => setModal(() => query = v),
+                      style: AppStyles.normalStringStyle(15, context.textPrimary),
+                      decoration: InputDecoration(
+                        hintText: 'Search services...',
+                        hintStyle: AppStyles.subStringStyle(14, context.textSecondary),
+                        prefixIcon: Icon(Icons.search_rounded,
+                            color: context.textSecondary, size: 20),
+                        filled: true,
+                        fillColor: context.surfaceBg,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Expanded(
+                    child: filtered.isEmpty
+                        ? Center(
+                            child: Text('No services found',
+                                style: AppStyles.subStringStyle(
+                                    14, context.textSecondary)),
+                          )
+                        : ListView.separated(
+                            controller: scrollCtrl,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 4),
+                            itemCount: filtered.length,
+                            separatorBuilder: (_, __) =>
+                                Divider(height: 1, color: context.dividerColor),
+                            itemBuilder: (_, i) {
+                              final svc = filtered[i];
+                              return ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                leading: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: SizedBox(
+                                    width: 48,
+                                    height: 48,
+                                    child: Image.asset(
+                                      svc.imageUrl ?? '',
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, __, ___) => Container(
+                                        color: context.surfaceBg,
+                                        child: Icon(Icons.cleaning_services_rounded,
+                                            color: AppColors.primaryThemeColor,
+                                            size: 24),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                title: Text(svc.name ?? '',
+                                    style: AppStyles.normalStringStyle(
+                                        14, context.textPrimary)),
+                                trailing: Icon(Icons.arrow_forward_ios_rounded,
+                                    size: 14, color: context.textSecondary),
+                                onTap: () {
+                                  Navigator.pop(ctx);
+                                  Get.put(BookingsController())
+                                      .changeSelectedService(svc);
+                                  Provider.of<CurrentPage>(context,
+                                          listen: false)
+                                      .setCurrentPageIndex(1);
+                                  context.push('/bookingsPage');
+                                },
+                              );
+                            },
+                          ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -271,36 +580,28 @@ class _HomepageViewState extends State<HomepageView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.18),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      'BizTidy',
-                      style: AppStyles.subStringStyle(
-                          11, Colors.white.withOpacity(0.9)),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
                   Text(
                     'A Tidy Space\nStarts With\nSmart Choices',
                     style: AppStyles.keyStringStyle(18, Colors.white),
                   ),
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.22),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      'Book a cleaner today →',
-                      style: AppStyles.subStringStyle(
-                          11, Colors.white),
+                  const SizedBox(height: 10),
+                  GestureDetector(
+                    onTap: () {
+                      Provider.of<CurrentPage>(context, listen: false)
+                          .setCurrentPageIndex(1);
+                      context.push('/bookingsPage');
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 7),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.22),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        'Book a cleaner today →',
+                        style: AppStyles.regularStringStyle(12, Colors.white),
+                      ),
                     ),
                   ),
                 ],
@@ -334,19 +635,9 @@ class _HomepageViewState extends State<HomepageView> {
         verticalSpacer(24),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Services',
-                style: AppStyles.keyStringStyle(17, context.textPrimary),
-              ),
-              Text(
-                'See All',
-                style: AppStyles.regularStringStyle(
-                    13, AppColors.primaryThemeColor),
-              ),
-            ],
+          child: Text(
+            'Services',
+            style: AppStyles.keyStringStyle(17, context.textPrimary),
           ),
         ),
         verticalSpacer(14),

@@ -3,7 +3,6 @@ import 'package:biztidy_mobile_app/ui/shared/globals.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_colors.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_strings.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_styles.dart';
-import 'package:biztidy_mobile_app/utils/extension_and_methods/screen_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -21,21 +20,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<_OnboardSlide> _slides = const [
     _OnboardSlide(
-      image: 'assets/casual-life-cleaning.png',
+      image: 'assets/clean-1.png',
       title: 'Professional Cleaning\nAt Your Doorstep',
       subtitle: 'We provide professional service at a friendly price',
     ),
     _OnboardSlide(
-      image: 'assets/residential.png',
+      image: 'assets/clean-2.png',
       title: 'Your Satisfaction Is\nOur Top Priority',
       subtitle:
           'The best results and your satisfaction is what drives us every day',
     ),
     _OnboardSlide(
-      image: 'assets/specialty.png',
+      image: 'assets/clean-3.png',
       title: "Let's Make Awesome\nChanges To Your Home",
       subtitle:
           'Book a cleaning service in minutes and enjoy a spotless space',
+    ),
+    _OnboardSlide(
+      image: 'assets/clean-4.png',
+      title: 'Trusted Cleaners,\nSpotless Results',
+      subtitle:
+          'Our vetted professionals deliver quality you can rely on every time',
     ),
   ];
 
@@ -184,100 +189,65 @@ class _SlideWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double circleSize = screenWidth(context) * 0.72;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Column(
-        children: [
-          SizedBox(height: MediaQuery.of(context).viewPadding.top + 40),
-          // Image with teal circle background + floating dots
-          SizedBox(
-            height: screenHeight(context) * 0.40,
+    return Column(
+      children: [
+        // Full-bleed image
+        Expanded(
+          child: ClipRRect(
+            borderRadius: const BorderRadius.vertical(
+              bottom: Radius.circular(32),
+            ),
             child: Stack(
-              alignment: Alignment.center,
+              fit: StackFit.expand,
               children: [
-                // Floating decoration dots
+                Image.asset(
+                  slide.image,
+                  fit: BoxFit.cover,
+                ),
+                // Subtle gradient at bottom for readability
                 Positioned(
-                  top: 10,
-                  left: 20,
-                  child: _Dot(size: 14, opacity: 0.35),
-                ),
-                Positioned(
-                  top: 30,
-                  right: 40,
-                  child: _Dot(size: 8, opacity: 0.2),
-                ),
-                Positioned(
-                  bottom: 30,
-                  left: 10,
-                  child: _Dot(size: 10, opacity: 0.25),
-                ),
-                Positioned(
-                  top: 60,
-                  right: 15,
-                  child: _Dot(size: 28, opacity: 0.45),
-                ),
-                Positioned(
-                  bottom: 50,
-                  right: 20,
-                  child: _Dot(size: 16, opacity: 0.3),
-                ),
-                // Teal circle background
-                Container(
-                  width: circleSize,
-                  height: circleSize,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.primaryThemeColor.withOpacity(0.9),
-                  ),
-                ),
-                // Hero image
-                SizedBox(
-                  width: circleSize * 1.05,
-                  height: circleSize * 1.05,
-                  child: Image.asset(
-                    slide.image,
-                    fit: BoxFit.contain,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  height: 80,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [
+                          Colors.black.withOpacity(0.25),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 32),
-          // Title
-          Text(
-            slide.title,
-            textAlign: TextAlign.center,
-            style: AppStyles.keyStringStyle(26, AppColors.fullBlack),
+        ),
+        const SizedBox(height: 28),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              Text(
+                slide.title,
+                textAlign: TextAlign.center,
+                style: AppStyles.keyStringStyle(26, AppColors.fullBlack),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                slide.subtitle,
+                textAlign: TextAlign.center,
+                style: AppStyles.subStringStyle(15, AppColors.darkGray),
+              ),
+            ],
           ),
-          const SizedBox(height: 12),
-          // Subtitle
-          Text(
-            slide.subtitle,
-            textAlign: TextAlign.center,
-            style: AppStyles.subStringStyle(15, AppColors.darkGray),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Dot extends StatelessWidget {
-  final double size;
-  final double opacity;
-  const _Dot({required this.size, required this.opacity});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: AppColors.primaryThemeColor.withOpacity(opacity),
-      ),
+        ),
+        const SizedBox(height: 8),
+      ],
     );
   }
 }
