@@ -128,7 +128,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                     const SizedBox(height: 12),
                     TextButton(
-                      onPressed: () => context.push('/createAccountView'),
+                      onPressed: () => context.push('/signInUserView'),
                       child: Text(
                         'Skip',
                         style: AppStyles.normalStringStyle(

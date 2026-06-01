@@ -225,12 +225,12 @@ class _HomepageViewState extends State<HomepageView> {
             ),
             _drawerTile(
               icon: IconsaxPlusLinear.calendar_1,
-              label: 'My Bookings',
+              label: 'Appointments',
               onTap: () {
                 Navigator.pop(context);
                 Provider.of<CurrentPage>(context, listen: false)
-                    .setCurrentPageIndex(1);
-                context.push('/bookingsPage');
+                    .setCurrentPageIndex(2);
+                context.push('/bookingsListScreen');
               },
             ),
             _drawerTile(

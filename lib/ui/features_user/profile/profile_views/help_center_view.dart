@@ -1,4 +1,3 @@
-import 'package:biztidy_mobile_app/ui/shared/spacer.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_colors.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/app_styles.dart';
 import 'package:biztidy_mobile_app/utils/app_constants/constants.dart';
@@ -46,77 +45,210 @@ class HelpCenterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final surface = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final bgColor = isDark ? const Color(0xFF121212) : const Color(0xFFF6F7F9);
+    final textPrimary = isDark ? Colors.white : AppColors.deepBlue;
+    final textSecondary = isDark ? Colors.white60 : const Color(0xFF6B7280);
+    final divider = isDark ? Colors.white12 : const Color(0xFFE5E7EB);
+
     return Scaffold(
+      backgroundColor: bgColor,
       appBar: AppBar(
-        backgroundColor: AppColors.primaryThemeColor,
+        backgroundColor: surface,
+        surfaceTintColor: surface,
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.arrow_back_ios_new_rounded,
+              size: 18, color: textPrimary),
+        ),
         title: Text(
           'Help Center',
-          style: AppStyles.normalStringStyle(20, AppColors.fullBlack),
+          style: AppStyles.keyStringStyle(17, textPrimary),
+        ),
+        centerTitle: true,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Divider(height: 1, thickness: 1, color: divider),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 32),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            // Hero icon
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: AppColors.primaryThemeColor.withOpacity(0.12),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.support_agent_rounded,
+                size: 36,
+                color: AppColors.primaryThemeColor,
+              ),
+            ),
+            const SizedBox(height: 20),
             Text(
-              'Have questions or need any help? Contact us via any of the following channels.',
-              style: AppStyles.regularStringStyle(16, AppColors.fullBlack),
+              'How can we help you?',
+              style: AppStyles.keyStringStyle(22, textPrimary),
               textAlign: TextAlign.center,
             ),
-            verticalSpacer(40),
-            ElevatedButton.icon(
-              onPressed: _launchEmail,
-              icon: const Icon(
-                Icons.email,
-                color: Colors.blue,
-              ),
-              label: Text(
-                'Email',
-                style: AppStyles.normalStringStyle(
-                  17,
-                  Colors.blue,
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 15)),
+            const SizedBox(height: 8),
+            Text(
+              'Our support team is available to assist you.\nChoose a channel below to get in touch.',
+              style: AppStyles.normalStringStyle(14, textSecondary),
+              textAlign: TextAlign.center,
             ),
-            verticalSpacer(16),
-            ElevatedButton.icon(
-              onPressed: _launchWhatsApp,
-              icon: Icon(
-                FontAwesomeIcons.whatsapp,
-                color: AppColors.normalGreen,
-              ),
-              label: Text(
-                'WhatsApp',
-                style: AppStyles.normalStringStyle(
-                  17,
-                  AppColors.normalGreen,
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 15)),
+            const SizedBox(height: 40),
+            // Contact cards
+            _ContactCard(
+              iconWidget: const Icon(Icons.mail_outline_rounded,
+                  color: Color(0xFF3B82F6), size: 22),
+              iconBg: const Color(0xFFEFF6FF),
+              title: 'Email Support',
+              subtitle: 'tidy1tech@gmail.com',
+              onTap: _launchEmail,
+              surface: surface,
+              textPrimary: textPrimary,
+              textSecondary: textSecondary,
+              divider: divider,
             ),
-            verticalSpacer(16),
-            ElevatedButton.icon(
-              onPressed: _launchPhoneCall,
-              icon: Icon(
-                Icons.phone,
-                color: AppColors.deepBlue,
-              ),
-              label: Text(
-                'Call',
-                style: AppStyles.normalStringStyle(
-                  17,
-                  AppColors.deepBlue,
+            const SizedBox(height: 12),
+            _ContactCard(
+              iconWidget: const FaIcon(FontAwesomeIcons.whatsapp,
+                  color: Color(0xFF25D366), size: 20),
+              iconBg: const Color(0xFFECFDF5),
+              title: 'WhatsApp',
+              subtitle: 'Chat with us instantly',
+              badge: 'Recommended',
+              onTap: _launchWhatsApp,
+              surface: surface,
+              textPrimary: textPrimary,
+              textSecondary: textSecondary,
+              divider: divider,
+            ),
+            const SizedBox(height: 12),
+            _ContactCard(
+              iconWidget: Icon(Icons.phone_outlined,
+                  color: AppColors.primaryThemeColor, size: 22),
+              iconBg: AppColors.primaryThemeColor.withOpacity(0.1),
+              title: 'Call Us',
+              subtitle: companyPhoneNumber,
+              onTap: _launchPhoneCall,
+              surface: surface,
+              textPrimary: textPrimary,
+              textSecondary: textSecondary,
+              divider: divider,
+            ),
+            const SizedBox(height: 40),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.access_time_rounded, size: 14, color: textSecondary),
+                const SizedBox(width: 6),
+                Text(
+                  'Available Mon – Fri, 9 AM – 6 PM',
+                  style: AppStyles.normalStringStyle(12, textSecondary),
                 ),
-              ),
-              style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 15)),
+              ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ContactCard extends StatelessWidget {
+  final Widget iconWidget;
+  final Color iconBg;
+  final String title;
+  final String subtitle;
+  final String? badge;
+  final VoidCallback onTap;
+  final Color surface;
+  final Color textPrimary;
+  final Color textSecondary;
+  final Color divider;
+
+  const _ContactCard({
+    required this.iconWidget,
+    required this.iconBg,
+    required this.title,
+    required this.subtitle,
+    this.badge,
+    required this.onTap,
+    required this.surface,
+    required this.textPrimary,
+    required this.textSecondary,
+    required this.divider,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: surface,
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          child: Row(
+            children: [
+              Container(
+                width: 46,
+                height: 46,
+                decoration: BoxDecoration(
+                  color: iconBg,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(child: iconWidget),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(title,
+                            style: AppStyles.regularStringStyle(15, textPrimary)),
+                        if (badge != null) ...[
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryThemeColor.withOpacity(0.12),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              badge!,
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.primaryThemeColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Text(subtitle,
+                        style: AppStyles.normalStringStyle(12, textSecondary)),
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right_rounded, color: textSecondary, size: 20),
+            ],
+          ),
         ),
       ),
     );

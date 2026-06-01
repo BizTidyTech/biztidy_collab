@@ -20,7 +20,7 @@ class AppStrings {
   static String createAccount = 'Create Account';
   static String proceed = 'Proceed';
   static String home = 'Home';
-  static String bookings = 'Bookings';
+  static String bookings = 'Book Now';
   static String myBookings = 'My Bookings';
   static String allBookings = 'All Bookings';
   static String payBalance = 'Pay Balance';
